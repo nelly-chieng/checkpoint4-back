@@ -2,6 +2,17 @@ const router = require("express").Router();
 const connection = require("./config");
 
 router.get("/", (req, res) => {
+  connection.query("select * from spectacle", (err, results) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send("Error retrieving spectacle");
+    } else {
+      res.status(200).json(results);
+    }
+  });
+});
+
+router.get("/city&date", (req, res) => {
   connection.query(
     "select r.date, c.name as city_name, s.name as spectacle_name from representation r join spectacle s on s.id=r.spectacleId join city c on c.id=r.cityId",
     (err, results) => {
