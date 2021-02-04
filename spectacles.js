@@ -26,11 +26,27 @@ router.get("/city&date", (req, res) => {
   );
 });
 
-router.post("/", (req, res) => {
-  const { name, price, places } = req.body;
+router.get("/:id", (req, res) => {
+  const spectacleId = req.params.id;
   connection.query(
-    "INSERT INTO spectacle (name, price, places) VALUES (?, ?, ?)",
-    [name, price, places],
+    "select * from spectacle where id = ?",
+    [spectacleId],
+    (err, results) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send("Error retrieving spectacle");
+      } else {
+        res.status(200).json(results[0]);
+      }
+    }
+  );
+});
+
+router.post("/", (req, res) => {
+  const { name, price, places, imgUrl, imgXLurl, description } = req.body;
+  connection.query(
+    "INSERT INTO spectacle (name, price, places) VALUES (?, ?, ?, ? ,? ,?",
+    [name, price, places, imgUrl, imgXLurl, description],
     (err, results) => {
       if (err) {
         res.status(500).send("Error create a spectacle");
