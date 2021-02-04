@@ -14,7 +14,23 @@ router.get("/", (req, res) => {
 
 router.get("/city&date", (req, res) => {
   connection.query(
-    "select r.date, c.name as city_name, s.name as spectacle_name from representation r join spectacle s on s.id=r.spectacleId join city c on c.id=r.cityId",
+    "select r.date, c.name as city_name, s.name as spectacle_name, s.imgUrl as spectacle_img, s.id as spectacle_id from representation r join spectacle s on s.id=r.spectacleId join city c on c.id=r.cityId",
+    (err, results) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send("Error retrieving spectacle");
+      } else {
+        res.status(200).json(results);
+      }
+    }
+  );
+});
+
+router.get("/city&date/:id", (req, res) => {
+  const spectacleId = req.params.id;
+  connection.query(
+    "select r.date, c.name as city_name, s.name as spectacle_name, s.imgUrl as spectacle_img, s.id as spectacle_id from representation r join spectacle s on s.id=r.spectacleId join city c on c.id=r.cityId where spectacleId = ?",
+    [spectacleId],
     (err, results) => {
       if (err) {
         console.log(err);
